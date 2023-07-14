@@ -10,3 +10,13 @@ send_buttons = [
     ]
 
 send_notification_kb.add(*send_buttons)
+
+
+answer_kb = types.InlineKeyboardMarkup()
+
+answer_buttons = [
+    types.InlineKeyboardButton('Выполнено', callback_data='done'),
+    types.InlineKeyboardButton('Не выполнено', callback_data='not_done')
+]
+
+answer_kb.add(*answer_buttons)
