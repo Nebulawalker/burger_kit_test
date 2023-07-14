@@ -2,6 +2,7 @@ from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters import Text
 from environs import Env
 import datetime
+import aioschedule
 
 from keyboards import send_notification_kb, answer_kb
 
@@ -32,6 +33,11 @@ async def get_notification():
         'answer_time': 10
     }
 
+async def answer_timer(answer_time):
+    #тут устанавливается задание на отсылку сообщения менеджеру, что время ответа вышло
+    #
+    pass
+
 
 @dp.callback_query_handler(Text('send_notification'))
 async def send_notification(callback_query: types.CallbackQuery):
@@ -41,6 +47,7 @@ async def send_notification(callback_query: types.CallbackQuery):
         f'{notification["text"]}',
         reply_markup=answer_kb
     )
+    await answer_timer(notification['answer_time'])
     await callback_query.answer()
 
 
@@ -50,6 +57,7 @@ async def done_button_handler(callback_query: types.CallbackQuery):
         MANAGER_TG_ID,
         'Сотрудник ответил: Выполнено!'
     )
+    #тут отменяется задание на отсылку сообщения менеджеру, что время ответа вышло, если время еще не вышло:)
     await callback_query.answer()
 
 
@@ -59,6 +67,7 @@ async def not_done_button_handler(callback_query: types.CallbackQuery):
         MANAGER_TG_ID,
         'Сотрудник ответил: Не выполнено!'
     )
+    #тут отменяется задание на отсылку сообщения менеджеру, что время ответа вышло, если время еще не вышло:)
     await callback_query.answer()
 
 
