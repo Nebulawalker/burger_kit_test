@@ -1,6 +1,5 @@
 #Current project
 traker.db
-service_account_file.json
 # Django #
 *.log
 *.pot

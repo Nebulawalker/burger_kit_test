@@ -16,10 +16,10 @@ async def get_notifications():
         if record[5] != 'done':
             unsent_notifications.append(
                 {
-                    'tg_id': record[0],
+                    'tg_id': int(record[0]),
                     'text': record[1],
                     'created_at': f'{record[2]} {record[3]}',
-                    'answer_time': record[4]
+                    'answer_time': int(record[4])
                 }
             )
         wks.update_value(f'F{i}', 'done')
