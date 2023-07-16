@@ -1,11 +1,9 @@
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters import Text
 from environs import Env
-import datetime
-import aioschedule
 
 from keyboards import send_notification_kb, answer_kb
-
+from readgsheet import get_notifications
 
 env = Env()
 env.read_env()
@@ -24,15 +22,6 @@ async def command_start(message: types.Message):
         'Тестовый бот', reply_markup=send_notification_kb)
 
 
-async def get_notification():
-    # логика для получения параметров напоминания, пока возвращает тестовые
-    return {
-        'tg_id': 704038777,
-        'text': 'Выполнено ли задание?',
-        'created_at': datetime.datetime.now(),
-        'answer_time': 10
-    }
-
 async def answer_timer(answer_time):
     #тут устанавливается задание на отсылку сообщения менеджеру, что время ответа вышло
     #
@@ -41,13 +30,14 @@ async def answer_timer(answer_time):
 
 @dp.callback_query_handler(Text('send_notification'))
 async def send_notification(callback_query: types.CallbackQuery):
-    notification = await get_notification()
-    await bot.send_message(
-        notification['tg_id'],
-        f'{notification["text"]}',
-        reply_markup=answer_kb
-    )
-    await answer_timer(notification['answer_time'])
+    notifications = await get_notifications()
+    for notification in notifications:
+        await bot.send_message(
+            notification['tg_id'],
+            f'{notification["text"]}',
+            reply_markup=answer_kb
+        )
+        await answer_timer(notification['answer_time'])
     await callback_query.answer()
 
 
